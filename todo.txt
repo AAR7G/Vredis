@@ -1,0 +1,12 @@
+Using epoll() instead of poll() in the event loop
+
+Creating and using a user defined buffer that handles appending and consuming from the buffer efficiently (6B)
+
+**Optimize the code so that the response data goes directly to Conn::outgoing
+
+We can define a leaner struct for lookups.
+
+Implement 'dbsize' command for database
+
+Doxygen
+
