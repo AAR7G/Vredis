@@ -37,12 +37,12 @@ static HNode **h_lookup(HTab *htab, HNode *key, bool (*eq)(HNode *, HNode *)) {
     return NULL;
 }
 
-//To remove a node from the chain
+//To remove/unlink a node from the chain
 static HNode *h_detach(HTab *htab, HNode **from) {
     HNode *node = *from;                //The target node
     *from = node->next;                 //Update incoming pointer to the target; i.e. Making *from point to the next in line
     htab->size--;
-    return node;
+    return node;                        //Returning pointer to the unlinked node
 }
 
 static void hm_trigger_rehashing(HMap *hmap) {
