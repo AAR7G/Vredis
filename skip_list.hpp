@@ -14,7 +14,7 @@ struct SList {
     struct SLNode *head;    //Sentinel head node pointer. Start line/fixed entry point of entire skip list
     size_t size;            //Number of elements
     int level;              //The max level of any node in list
-    bool (*less_cmp)(SLNode *a, SLNode *b);     //A "less than" comparision function to traverse the list
+    bool (*less_cmp)(SLNode *a, SLNode *b);     //A generic "less than" comparision function to traverse the list
 };
 
 void sl_init(SList *list, bool (*less_cmp)(SLNode *a, SLNode *b));
