@@ -19,7 +19,7 @@ struct SList {
 
 void sl_init(SList *list, bool (*less_cmp)(SLNode *a, SLNode *b));
 SLNode *sl_find(SList *list, SLNode *key);
-void sl_insert(SList *list, SLNode *node);
+SLNode *sl_insert(SList *list, SLNode *node);
 SLNode *sl_delete(SList *list, SLNode *key);
 void sl_clear(SList *list);
 size_t sl_size(SList *list);
