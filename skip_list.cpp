@@ -23,7 +23,7 @@ void sl_init(SList *list, bool (*less_cmp)(SLNode *a, SLNode *b)) {
 }
 
 static size_t sl_get_random_level() {
-    size_t level = 0;
+    size_t level = 1;
     while(rand() > RAND_MAX / 2 && level < MAX_LEVEL) {         //Fixed max levels
         level++;
     }
@@ -31,20 +31,15 @@ static size_t sl_get_random_level() {
     return level;
 }
 
-void sl_insert(SList *list, SLNode *node) {
-    SLNode *current = list->head;
+SLNode *sl_insert(SList *list, SLNode *node) {
     SLNode *update[MAX_LEVEL];
+    SLNode *existing = sl_find_path(list, node, update);
 
-    //Refactor using sl_find_path
-    for(int i = list->level; i >= 0; i--) {
-        while(current->forward[i] != NULL && list->less_cmp(current->forward[i], node)) {
-            current = current->forward[i];
-        }
-
-        update[i] = current;
+    //Replace existing node behaviour
+    SLNode *replaced_node = NULL;
+    if(existing != NULL) {
+        replaced_node = sl_detach(list, existing, update);
     }
-
-    //replace behaviour
 
     size_t new_level_height = sl_get_random_level();
     size_t new_level_indx = new_level_height - 1;
@@ -66,6 +61,7 @@ void sl_insert(SList *list, SLNode *node) {
     }
 
     list->size++;
+    return replaced_node;
 }
 
 static SLNode *sl_find_path(SList *list, SLNode *key, SLNode **update) {
@@ -91,12 +87,7 @@ SLNode *sl_find(SList *list, SLNode *key) {
     return sl_find_path(list, key, NULL);
 }
 
-SLNode *sl_delete(SList *list, SLNode *key) {
-    SLNode *update[MAX_LEVEL];      //Could also use "list->level + 1" as array size; Used MAX_LEVEL for consistency
-    SLNode *target = sl_find_path(list, key, update);
-
-    if(target == NULL) return NULL;
-
+static SLNode *sl_detach(SList *list, SLNode *target, SLNode **update) {
     for(int i = target->level; i >= 0; i--) {
         if(update[i]->forward[i] == target) update[i]->forward[i] = target->forward[i];
     }
@@ -110,6 +101,15 @@ SLNode *sl_delete(SList *list, SLNode *key) {
 
     list->size--;
     return target;
+}
+
+SLNode *sl_delete(SList *list, SLNode *key) {
+    SLNode *update[MAX_LEVEL];      //Could also use "list->level + 1" as array size; Used MAX_LEVEL for consistency
+    SLNode *target = sl_find_path(list, key, update);
+
+    if(target == NULL) return NULL;
+
+    return sl_detach(list, target, update);
 }
 
 void sl_clear(SList *list) {
